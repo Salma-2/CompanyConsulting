@@ -69,7 +69,7 @@ class RegisterActivity : AppCompatActivity() {
         user?.sendEmailVerification()?.addOnCompleteListener {
             Toast.makeText(this,"Sent", Toast.LENGTH_LONG).show()
         }?.addOnFailureListener {
-            Toast.makeText(this,"Failed", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"Couldn't send verification email", Toast.LENGTH_LONG).show()
         }
     }
 }

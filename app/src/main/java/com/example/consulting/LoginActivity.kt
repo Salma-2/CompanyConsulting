@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
             (!isEmpty(password))
         ) {
 
+
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
@@ -56,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }
 
+
         } else {
             Toast.makeText(this, "You must fill out all the fields!", Toast.LENGTH_LONG).show()
         }
@@ -65,7 +67,16 @@ class LoginActivity : AppCompatActivity() {
         authListener = FirebaseAuth.AuthStateListener {
             val user = auth.currentUser
             if (user != null) {
-                Log.d(TAG, "AuthListener: signed in")
+                if (user.isEmailVerified)
+                    {
+                        Log.d(TAG, "AuthListener: signed in")}
+                else {
+                    Toast.makeText(
+                        this, "Check Your Email Inbox for a Verification Link.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    auth.signOut()
+                }
             } else {
                 Log.e(TAG, "AuthListener: signed out")
             }
