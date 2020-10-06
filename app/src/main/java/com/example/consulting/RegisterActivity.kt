@@ -51,6 +51,7 @@ class RegisterActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {task ->
             if (task.isSuccessful) {
                 Log.e("RegisterActivity", "create User With Email:success, id:" + (auth.currentUser?.uid))
+                sendVerificationEmail(email)
                 auth.signOut()
             } else {
                 Log.e("RegisterActivity", "createUserWithEmail:failure" , task.exception)
@@ -60,5 +61,15 @@ class RegisterActivity : AppCompatActivity() {
                 Log.e("RegisterActivity", "Fail")
             }
 
+    }
+
+
+    private fun sendVerificationEmail(email: String){
+        val user = auth.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener {
+            Toast.makeText(this,"Sent", Toast.LENGTH_LONG).show()
+        }?.addOnFailureListener {
+            Toast.makeText(this,"Failed", Toast.LENGTH_LONG).show()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.consulting
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -24,6 +25,10 @@ class LoginActivity : AppCompatActivity() {
 
         loginBtn.setOnClickListener {
             doLoginWork()
+        }
+
+        registerTv.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
