@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "215937275301",
+    "firebase_url": "https://consulting-95338.firebaseio.com",
+    "project_id": "consulting-95338",
+    "storage_bucket": "consulting-95338.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215937275301:android:b463723cf73b7655a6044c",
+        "android_client_info": {
+          "package_name": "com.example.consulting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215937275301-e53t1pflpmf9v1tcn2rud2nm2s6ad0gj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.consulting",
+            "certificate_hash": "3d8004a4f225b3ee03f6c614dba3a5e3ab3bd97c"
+          }
+        },
+        {
+          "client_id": "215937275301-d42ek0nc227uijse9e30266dsvtn15fc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0-98i61Sq6vgc_fe92VRJ8qNH_rAdNg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215937275301-d42ek0nc227uijse9e30266dsvtn15fc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
