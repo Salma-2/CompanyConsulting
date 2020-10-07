@@ -22,7 +22,6 @@ class SignedinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signedin)
 
-
         setUserDetails()
         getUserDetails()
     }

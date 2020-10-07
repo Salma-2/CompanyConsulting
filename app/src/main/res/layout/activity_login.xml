@@ -76,13 +76,13 @@
 
     <TextView
         android:id="@+id/registerTv"
-        android:layout_width="wrap_content"
         style="@style/TvStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/loginBtn"
+        app:layout_constraintStart_toStartOf="@+id/loginBtn"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
 
     <TextView
@@ -97,10 +97,10 @@
 
     <TextView
         android:id="@+id/resendVerMailTv"
+        style="@style/TvStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        style="@style/TvStyle"
         android:text="Resend Verification Email"
         app:layout_constraintEnd_toEndOf="@+id/registerTv"
         app:layout_constraintStart_toStartOf="@+id/registerTv"

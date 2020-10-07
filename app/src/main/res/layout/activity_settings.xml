@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <EditText
+        android:id="@+id/userEmail"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="New Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <EditText
+        android:id="@+id/userPassword"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="Current Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/userEmail"
+        app:layout_constraintStart_toStartOf="@+id/userEmail"
+        app:layout_constraintTop_toBottomOf="@+id/userEmail" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/LogoStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Account Settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorAccent"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="@+id/userPassword"
+        app:layout_constraintStart_toStartOf="@+id/userPassword"
+        app:layout_constraintTop_toBottomOf="@+id/userPassword" />
+
+    <TextView
+        android:id="@+id/changePasswordTv"
+        style="@style/TvStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Change Password"
+        app:layout_constraintEnd_toEndOf="@+id/saveBtn"
+        app:layout_constraintStart_toStartOf="@+id/saveBtn"
+        app:layout_constraintTop_toBottomOf="@+id/saveBtn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
