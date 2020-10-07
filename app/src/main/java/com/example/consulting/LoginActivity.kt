@@ -21,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = Firebase.auth
+
         setupFirebaseAuth()
 
         loginBtn.setOnClickListener {
@@ -32,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         }
         resendVerMailTv.setOnClickListener {
             val dialog = ResendVerificationDialog()
-            dialog.show(supportFragmentManager , "Resend Dialog")
+            dialog.show(supportFragmentManager, "Resend Dialog")
         }
     }
 
@@ -71,10 +72,11 @@ class LoginActivity : AppCompatActivity() {
         authListener = FirebaseAuth.AuthStateListener {
             val user = auth.currentUser
             if (user != null) {
-                if (user.isEmailVerified)
-                    {
-                        Log.d(TAG, "AuthListener: signed in")}
-                else {
+                if (user.isEmailVerified) {
+                    Log.d(TAG, "AuthListener: signed in")
+                    startActivity(Intent(this, SignedinActivity::class.java))
+                    finish()
+                } else {
                     Toast.makeText(
                         this, "Check Your Email Inbox for a Verification Link.",
                         Toast.LENGTH_SHORT
