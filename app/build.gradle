@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.consulting"
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
@@ -35,6 +36,7 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
     implementation 'com.google.firebase:firebase-auth-ktx:19.4.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
 
 
     testImplementation 'junit:junit:4.12'

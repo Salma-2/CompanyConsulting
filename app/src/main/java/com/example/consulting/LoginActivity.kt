@@ -30,6 +30,10 @@ class LoginActivity : AppCompatActivity() {
         registerTv.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+        resendVerMailTv.setOnClickListener {
+            val dialog = ResendVerificationDialog()
+            dialog.show(supportFragmentManager , "Resend Dialog")
+        }
     }
 
     private fun doLoginWork() {
