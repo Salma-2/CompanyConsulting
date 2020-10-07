@@ -19,6 +19,8 @@ class SignedinActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signedin)
+
+        getUserDetails()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -55,6 +57,26 @@ class SignedinActivity : AppCompatActivity() {
         }
         else{
             Log.d(TAG , "user is not null")
+        }
+    }
+
+
+    private fun getUserDetails(){
+        val user = auth.currentUser
+        user?.let {
+            val name = user.displayName
+            val email = user.email
+            val photoUrl = user.photoUrl
+            val uId = user.uid
+            val emailVerified = user.isEmailVerified
+
+            val details = "Name: $name,\n" +
+                    " Email: $email,\n" +
+                    "PhotoUrl: $photoUrl,\n" +
+                    "Id: $uId,\n" +
+                    "isVerified? $emailVerified."
+            Log.d(TAG, details)
+
         }
     }
 }
