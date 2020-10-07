@@ -40,6 +40,10 @@ class SignedinActivity : AppCompatActivity() {
                 finish()
                 return true
             }
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
