@@ -1,6 +1,7 @@
 package com.example.consulting
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 
 class SignedinActivity : AppCompatActivity() {
@@ -20,6 +22,8 @@ class SignedinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signedin)
 
+
+        setUserDetails()
         getUserDetails()
     }
 
@@ -46,22 +50,21 @@ class SignedinActivity : AppCompatActivity() {
         checkAuthenticationState()
     }
 
-    private fun checkAuthenticationState(){
+    private fun checkAuthenticationState() {
         //go back to login screen
-        if(auth.currentUser == null){
-            Log.d(TAG , "user is null")
-            val intent =Intent(this, LoginActivity::class.java)
+        if (auth.currentUser == null) {
+            Log.d(TAG, "user is null")
+            val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
-        }
-        else{
-            Log.d(TAG , "user is not null")
+        } else {
+            Log.d(TAG, "user is not null")
         }
     }
 
 
-    private fun getUserDetails(){
+    private fun getUserDetails() {
         val user = auth.currentUser
         user?.let {
             val name = user.displayName
@@ -77,6 +80,20 @@ class SignedinActivity : AppCompatActivity() {
                     "isVerified? $emailVerified."
             Log.d(TAG, details)
 
+        }
+    }
+
+    private fun setUserDetails() {
+        val user = auth.currentUser
+        val profileUpdates = userProfileChangeRequest {
+            displayName = "Salma"
+            photoUri =
+                Uri.parse("https://1.bp.blogspot.com/-47ehH6VQ8Dg/U1io7iuzMoI/AAAAAAAAAa8/rh8gAHDL12k/s1600/android.jpg")
+        }
+
+        user!!.updateProfile(profileUpdates).addOnCompleteListener {
+            if (it.isSuccessful)
+                Log.d(TAG, "Profile Updated")
         }
     }
 }
