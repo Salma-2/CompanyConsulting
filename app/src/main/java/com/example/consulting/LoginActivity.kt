@@ -1,6 +1,5 @@
 package com.example.consulting
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -29,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         registerTv.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+            navigateTo(this, LoginActivity(), RegisterActivity::class.java)
         }
         resendVerMailTv.setOnClickListener {
             val dialog = ResendVerificationDialog()
@@ -74,8 +73,7 @@ class LoginActivity : AppCompatActivity() {
             if (user != null) {
                 if (user.isEmailVerified) {
                     Log.d(TAG, "AuthListener: signed in")
-                    startActivity(Intent(this, SignedinActivity::class.java))
-                    finish()
+                    navigateTo(this, LoginActivity(), SignedinActivity::class.java, true)
                 } else {
                     Toast.makeText(
                         this, "Check Your Email Inbox for a Verification Link.",

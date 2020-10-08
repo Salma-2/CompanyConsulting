@@ -1,6 +1,5 @@
 package com.example.consulting
 
-import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -36,12 +35,11 @@ class SignedinActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_signout -> {
                 auth.signOut()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+                navigateTo(this, SignedinActivity(), LoginActivity::class.java, true)
                 return true
             }
             R.id.action_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                navigateTo(this, SignedinActivity(), SettingsActivity::class.java)
                 return true
             }
         }
@@ -57,10 +55,7 @@ class SignedinActivity : AppCompatActivity() {
         //go back to login screen
         if (auth.currentUser == null) {
             Log.d(TAG, "user is null")
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+            navigateTo(this, SignedinActivity(), LoginActivity::class.java, true)
         } else {
             Log.d(TAG, "user is not null")
         }

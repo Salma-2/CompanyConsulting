@@ -1,6 +1,5 @@
 package com.example.consulting
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +12,15 @@ import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
+    lateinit var authListener: FirebaseAuth.AuthStateListener
     private val TAG = "SettingsActivity"
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         auth = Firebase.auth
+        setupFirebaseAuth()
 
         changePasswordTv.setOnClickListener {
             sendResetPasswordLink()
@@ -29,7 +32,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun sendResetPasswordLink() {
         val user = auth.currentUser
-        val email = user?.email
+        val email = user!!.email
         if (email != null) {
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -49,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun changeEmail() {
         val newEmail = userEmail.text.toString()
         val password = userPassword.text.toString()
-        val currentEmail = auth.currentUser?.email
+        val currentEmail = auth.currentUser!!.email
 
         if (!isEmpty(newEmail) && !(isEmpty(password))) {
             //different emails
@@ -82,15 +85,18 @@ class SettingsActivity : AppCompatActivity() {
                                 .show()
                         } else {
                             user.updateEmail(newEmail).addOnCompleteListener { task ->
-                                if (task.isSuccessful){
+                                if (task.isSuccessful) {
                                     Toast.makeText(this, "Updated email", Toast.LENGTH_LONG).show()
                                     sendVerificationEmail(newEmail)
                                     signOut()
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "unable to update email",
+                                        Toast.LENGTH_LONG
+                                    )
+                                        .show()
                                 }
-                                else{
-                                Toast.makeText(this, "unable to update email", Toast.LENGTH_LONG)
-                                    .show()
-                            }
                             }
                         }
 
@@ -101,13 +107,39 @@ class SettingsActivity : AppCompatActivity() {
             } else {
                 Log.e(TAG, "Task not successful", task.exception)
             }
-        }?.addOnFailureListener { Log.e(TAG, "failure") }
+        }
     }
 
     private fun signOut() {
         auth.signOut()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+        navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
+    }
+
+    private fun setupFirebaseAuth() {
+        authListener = FirebaseAuth.AuthStateListener {
+            val user = auth.currentUser
+            if (user == null) {
+                navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
+                Log.d(TAG, "AuthListener: signed out - null user")
+            }
+            else{
+                Log.d(TAG, "AuthListener: signed in - user with id: ${user.uid}")
+            }
+        }
+    }
+
+    override fun onStop() {
+        if(authListener != null){
+            auth.removeAuthStateListener(authListener)
+        }
+        super.onStop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(authListener != null){
+            auth.addAuthStateListener(authListener)
+        }
     }
 
     private fun sendVerificationEmail(email: String) {

@@ -1,8 +1,6 @@
 package com.example.consulting
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
+
 import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
@@ -60,7 +58,6 @@ class ResendVerificationDialog : DialogFragment() {
                 Log.d(TAG, "re-authenticate success")
                 sendVerificationEmail(email)
                 auth.signOut()
-
             }
         }.addOnFailureListener {
             Toast.makeText(
@@ -69,6 +66,7 @@ class ResendVerificationDialog : DialogFragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
+
     }
 
     private fun sendVerificationEmail(email: String) {
