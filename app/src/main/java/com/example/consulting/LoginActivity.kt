@@ -32,6 +32,11 @@ class LoginActivity : AppCompatActivity() {
         registerTv.setOnClickListener {
             navigateTo(this, LoginActivity(), RegisterActivity::class.java)
         }
+
+        forgotPassTv.setOnClickListener {
+            val dialog = ForgotPasswordDialog(this)
+            dialog.show(supportFragmentManager, "Forgot passowrd")
+        }
         resendVerMailTv.setOnClickListener {
             val dialog = ResendVerificationDialog(this)
             dialog.show(supportFragmentManager, "Resend Dialog")
