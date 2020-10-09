@@ -3,6 +3,8 @@ package com.example.consulting
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
+
 
 fun isEmpty(str: String): Boolean {
     return str.equals("")
@@ -25,4 +27,13 @@ fun <T> navigateTo(context: Context, activity : Activity, to: Class<T>, isFinish
     if(isFinishid)
         activity.finish()
 
+}
+
+fun showProgressBar(view: View){
+    view.visibility= View.VISIBLE
+}
+
+fun dismissProgressBar(view: View){
+    if(view.visibility == View.VISIBLE)
+        view.visibility= View.INVISIBLE
 }

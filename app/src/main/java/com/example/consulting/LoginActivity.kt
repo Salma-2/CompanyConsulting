@@ -16,6 +16,8 @@ class LoginActivity : AppCompatActivity() {
     private val TAG = this::class.simpleName
     private lateinit var auth: FirebaseAuth
     private lateinit var authListener: FirebaseAuth.AuthStateListener
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -31,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
             navigateTo(this, LoginActivity(), RegisterActivity::class.java)
         }
         resendVerMailTv.setOnClickListener {
-            val dialog = ResendVerificationDialog()
+            val dialog = ResendVerificationDialog(this)
             dialog.show(supportFragmentManager, "Resend Dialog")
         }
     }
@@ -43,9 +45,9 @@ class LoginActivity : AppCompatActivity() {
         if ((!isEmpty(email)) &&
             (!isEmpty(password))
         ) {
-
-
+            showProgressBar(progressBar)
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                dismissProgressBar(progressBar)
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
                 } else {
@@ -60,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+
 
 
         } else {
@@ -101,4 +104,5 @@ class LoginActivity : AppCompatActivity() {
             auth.addAuthStateListener(authListener)
         }
     }
+
 }

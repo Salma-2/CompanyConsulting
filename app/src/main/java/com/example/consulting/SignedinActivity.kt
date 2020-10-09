@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -13,10 +14,12 @@ import com.google.firebase.ktx.Firebase
 
 class SignedinActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
+    lateinit var authListener: FirebaseAuth.AuthStateListener
     private val TAG = "SignedinActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
 
         auth = Firebase.auth
+        setupFirebaseAuth()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signedin)
@@ -89,9 +92,28 @@ class SignedinActivity : AppCompatActivity() {
                 Uri.parse("https://1.bp.blogspot.com/-47ehH6VQ8Dg/U1io7iuzMoI/AAAAAAAAAa8/rh8gAHDL12k/s1600/android.jpg")
         }
 
-        user!!.updateProfile(profileUpdates).addOnCompleteListener {
-            if (it.isSuccessful)
+        user?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
+            if (task.isSuccessful)
                 Log.d(TAG, "Profile Updated")
+            else {
+                Log.d(TAG, "Can not update profile, " , task.exception)
+            }
         }
+
+    }
+
+    private fun setupFirebaseAuth() {
+
+        Log.d(TAG, "setupFirebaseAuth: started.")
+        authListener = FirebaseAuth.AuthStateListener {
+            val user = auth.currentUser
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out")
+                navigateTo(this, SignedinActivity(), LoginActivity::class.java, true)
+            }
+        }
+
     }
 }

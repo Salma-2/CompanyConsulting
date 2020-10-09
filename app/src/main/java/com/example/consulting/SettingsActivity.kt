@@ -6,12 +6,14 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
+
     lateinit var authListener: FirebaseAuth.AuthStateListener
     private val TAG = "SettingsActivity"
 
@@ -19,12 +21,11 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
         auth = Firebase.auth
         setupFirebaseAuth()
 
-        changePasswordTv.setOnClickListener {
-            sendResetPasswordLink()
-        }
+        changePasswordTv.setOnClickListener { sendResetPasswordLink() }
 
         saveBtn.setOnClickListener { changeEmail() }
 
@@ -33,20 +34,20 @@ class SettingsActivity : AppCompatActivity() {
     private fun sendResetPasswordLink() {
         val user = auth.currentUser
         val email = user!!.email
-        if (email != null) {
-            auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Password reset email sent", Toast.LENGTH_LONG).show()
-                    signOut()
 
-                } else {
-                    Log.e(TAG, "No user associated with that email")
-                    Toast.makeText(this, "No user associated with that email", Toast.LENGTH_LONG)
-                        .show()
-                }
+        auth.sendPasswordResetEmail(email!!).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Password reset email sent", Toast.LENGTH_LONG).show()
+                auth.signOut()
 
+            } else {
+                Log.e(TAG, "No user associated with that email")
+                Toast.makeText(this, "No user associated with that email", Toast.LENGTH_LONG)
+                    .show()
             }
+
         }
+
     }
 
     private fun changeEmail() {
@@ -57,14 +58,18 @@ class SettingsActivity : AppCompatActivity() {
         if (!isEmpty(newEmail) && !(isEmpty(password))) {
             //different emails
             if (!newEmail.equals(currentEmail)) {
-                if (isValidDomain(newEmail)) {
-                    updateUserEmail(currentEmail!!, password, newEmail)
+                if (newEmail.contains("@")) {
+                    if (isValidDomain(newEmail)) {
+                        updateUserEmail(currentEmail!!, password, newEmail)
+                    } else {
+                        Toast.makeText(this, "Invalid Domain", Toast.LENGTH_LONG).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Invalid Domain", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Invalid email syntax", Toast.LENGTH_LONG).show()
                 }
 
             } else {
-                Toast.makeText(this, "No Changes were Made", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "No changes were made", Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(this, "You must fill out all the fields!", Toast.LENGTH_LONG).show()
@@ -74,7 +79,9 @@ class SettingsActivity : AppCompatActivity() {
     private fun updateUserEmail(currentEmail: String, password: String, newEmail: String) {
         val credential = EmailAuthProvider.getCredential(currentEmail, password)
         val user = auth.currentUser
-        user?.reauthenticate(credential)?.addOnCompleteListener { task ->
+        showProgressBar(progressBar)
+        user!!.reauthenticate(credential)?.addOnCompleteListener { task ->
+            dismissProgressBar(progressBar)
             if (task.isSuccessful) {
                 auth.fetchSignInMethodsForEmail(newEmail).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -87,8 +94,8 @@ class SettingsActivity : AppCompatActivity() {
                             user.updateEmail(newEmail).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Toast.makeText(this, "Updated email", Toast.LENGTH_LONG).show()
-                                    sendVerificationEmail(newEmail)
-                                    signOut()
+                                    sendVerificationEmail()
+                                    auth.signOut()
                                 } else {
                                     Toast.makeText(
                                         this,
@@ -105,15 +112,11 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                Log.e(TAG, "Task not successful", task.exception)
+                Log.e(TAG, "reauthenticate not successful", task.exception)
             }
         }
     }
 
-    private fun signOut() {
-        auth.signOut()
-        navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
-    }
 
     private fun setupFirebaseAuth() {
         authListener = FirebaseAuth.AuthStateListener {
@@ -121,15 +124,14 @@ class SettingsActivity : AppCompatActivity() {
             if (user == null) {
                 navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
                 Log.d(TAG, "AuthListener: signed out - null user")
-            }
-            else{
+            } else {
                 Log.d(TAG, "AuthListener: signed in - user with id: ${user.uid}")
             }
         }
     }
 
     override fun onStop() {
-        if(authListener != null){
+        if (authListener != null) {
             auth.removeAuthStateListener(authListener)
         }
         super.onStop()
@@ -137,14 +139,14 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(authListener != null){
+        if (authListener != null) {
             auth.addAuthStateListener(authListener)
         }
     }
 
-    private fun sendVerificationEmail(email: String) {
+    private fun sendVerificationEmail() {
         val user = auth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener {
+        user!!.sendEmailVerification()?.addOnCompleteListener {
             Toast.makeText(this, "Sent verification email", Toast.LENGTH_LONG).show()
         }?.addOnFailureListener {
             Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()

@@ -1,6 +1,7 @@
 package com.example.consulting
 
 
+import android.content.Context
 import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
@@ -17,10 +18,12 @@ import kotlinx.android.synthetic.main.resend_verification_dialog.*
 import kotlinx.android.synthetic.main.resend_verification_dialog.view.*
 
 
-class ResendVerificationDialog : DialogFragment() {
+class ResendVerificationDialog(val mContext: Context) : DialogFragment() {
 
     lateinit var auth: FirebaseAuth
     private val TAG = "ResendVerification"
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,27 +44,29 @@ class ResendVerificationDialog : DialogFragment() {
                 authenticateAndResendEmail(email, password)
             }
             else{
-                Toast.makeText(context, "You must fill out all the fields!", Toast.LENGTH_LONG).show()
+                Toast.makeText(mContext, "You must fill out all the fields!", Toast.LENGTH_LONG).show()
             }
 
-            Log.d(TAG, "ConfirmDialog")
-
         }
+
         return view
     }
 
 
     private fun authenticateAndResendEmail(email: String, password: String) {
         val credential = EmailAuthProvider.getCredential(email, password)
+        showProgressBar(progressBar)
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
+            dismissProgressBar(progressBar)
             if (task.isSuccessful) {
                 Log.d(TAG, "re-authenticate success")
-                sendVerificationEmail(email)
+                sendVerificationEmail()
                 auth.signOut()
+                dismiss()
             }
         }.addOnFailureListener {
             Toast.makeText(
-                context,
+                mContext,
                 "Invalid Credentials" + "\n" + "Reset Your Password and Try Again",
                 Toast.LENGTH_LONG
             ).show()
@@ -69,15 +74,20 @@ class ResendVerificationDialog : DialogFragment() {
 
     }
 
-    private fun sendVerificationEmail(email: String) {
+    private fun sendVerificationEmail() {
         val user = auth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener {
-            Toast.makeText(context, "Sent", Toast.LENGTH_LONG).show()
-            dismiss()
-        }?.addOnFailureListener {
-            Toast.makeText(context, "Couldn't send verification email", Toast.LENGTH_LONG).show()
+        user?.sendEmailVerification()?.addOnCompleteListener {task->
+            if(task.isSuccessful){
+                Toast.makeText(mContext, "Sent", Toast.LENGTH_LONG).show()
+                Log.d(TAG, "Sent verification email")
+            }
+            else{
+                Log.e(TAG, "Couldn't send verification email ", task.exception)
+                Toast.makeText(mContext, "Couldn't send verification email", Toast.LENGTH_LONG).show()
+            }
         }
     }
+
 
 
 }

@@ -11,11 +11,13 @@ import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
+    private val TAG = "RegisterActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         auth = Firebase.auth
+
 
         registerBtn.setOnClickListener {
             doRegisterWork()
@@ -32,14 +34,20 @@ class RegisterActivity : AppCompatActivity() {
             (!isEmpty(password)) &&
             (!isEmpty(confirmPassword))
         ) {
-            if (isValidDomain(email)) {
-                if (password == confirmPassword) {
-                    registerNewEmail(email, password)
+            if (email.contains("@")) {
+                if (isValidDomain(email)) {
+                    if (password == confirmPassword) {
+                        showProgressBar(progressBar)
+                        registerNewEmail(email, password)
+                    } else {
+                        Toast.makeText(this, "Passwords do not Match", Toast.LENGTH_LONG).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Passwords do not Match", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Please Register With Company Email", Toast.LENGTH_LONG)
+                        .show()
                 }
             } else {
-                Toast.makeText(this, "Please Register With Company Email", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Invalid email syntax", Toast.LENGTH_LONG).show()
             }
 
         } else {
@@ -48,28 +56,31 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerNewEmail(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {task ->
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            dismissProgressBar(progressBar)
             if (task.isSuccessful) {
-                Log.e("RegisterActivity", "create User With Email:success, id:" + (auth.currentUser?.uid))
-                sendVerificationEmail(email)
+                Log.e(
+                    TAG,
+                    "create User With Email:success, id:" + (auth.currentUser!!.uid)
+                )
+                sendVerificationEmail()
                 auth.signOut()
+                navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
             } else {
-                Log.e("RegisterActivity", "createUserWithEmail:failure" , task.exception)
+                Log.e(TAG, "createUserWithEmail:failure", task.exception)
             }
         }
-            .addOnFailureListener {
-                Log.e("RegisterActivity", "Fail")
-            }
 
     }
 
 
-    private fun sendVerificationEmail(email: String){
+    private fun sendVerificationEmail() {
         val user = auth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener {
-            Toast.makeText(this,"Sent", Toast.LENGTH_LONG).show()
+        user!!.sendEmailVerification()?.addOnCompleteListener {
+            Toast.makeText(this, "Verification email sent", Toast.LENGTH_LONG).show()
         }?.addOnFailureListener {
-            Toast.makeText(this,"Couldn't send verification email", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()
         }
     }
+
 }
