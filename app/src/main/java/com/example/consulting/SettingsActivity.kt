@@ -8,6 +8,9 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -15,6 +18,8 @@ class SettingsActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
 
     lateinit var authListener: FirebaseAuth.AuthStateListener
+    lateinit var database: FirebaseDatabase
+    lateinit var ref: DatabaseReference
     private val TAG = "SettingsActivity"
 
 
@@ -23,30 +28,25 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         auth = Firebase.auth
+        database = Firebase.database
         setupFirebaseAuth()
+        getUserDetails()
 
         changePasswordTv.setOnClickListener { sendResetPasswordLink() }
 
-        saveBtn.setOnClickListener { changeEmail() }
+        saveBtn.setOnClickListener {
+            changeEmail()
+            insertUserDetails(auth.currentUser)
+        }
 
     }
 
-    private fun sendResetPasswordLink() {
-        val user = auth.currentUser
-        val email = user!!.email
+    private fun isEmailChanged(): Boolean {
+        val newEmail = userEmail.text.toString()
+        val currentEmail = auth.currentUser!!.email
 
-        auth.sendPasswordResetEmail(email!!).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(this, "Password reset email sent", Toast.LENGTH_LONG).show()
-                auth.signOut()
-
-            } else {
-                Log.e(TAG, "No user associated with that email")
-                Toast.makeText(this, "No user associated with that email", Toast.LENGTH_LONG)
-                    .show()
-            }
-
-        }
+        if (!isEmpty(newEmail) && !newEmail.equals(currentEmail)) return true
+        return false
 
     }
 
@@ -54,10 +54,8 @@ class SettingsActivity : AppCompatActivity() {
         val newEmail = userEmail.text.toString()
         val password = userPassword.text.toString()
         val currentEmail = auth.currentUser!!.email
-
-        if (!isEmpty(newEmail) && !(isEmpty(password))) {
-            //different emails
-            if (!newEmail.equals(currentEmail)) {
+        if (isEmailChanged()) {
+            if (!isEmpty(password)) {
                 if (newEmail.contains("@")) {
                     if (isValidDomain(newEmail)) {
                         updateUserEmail(currentEmail!!, password, newEmail)
@@ -67,13 +65,15 @@ class SettingsActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this, "Invalid email syntax", Toast.LENGTH_LONG).show()
                 }
-
             } else {
-                Toast.makeText(this, "No changes were made", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "You must confirm your password to change email!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
-        } else {
-            Toast.makeText(this, "You must fill out all the fields!", Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun updateUserEmail(currentEmail: String, password: String, newEmail: String) {
@@ -130,6 +130,64 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun getUserDetails() {
+        val user = auth.currentUser
+
+        userEmail.setText(user!!.email)
+
+    }
+
+    private fun insertUserDetails(user: FirebaseUser?) {
+        ref = database.reference.child(getString(R.string.dbnode_users)).child(user!!.uid)
+        ref.child(getString(R.string.field_name)).setValue(userName.text.toString())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, " name inserted")
+                } else {
+                    Log.d(TAG, "Can not insert name ", task.exception)
+                }
+            }
+        ref.child(getString(R.string.field_phone)).setValue(userPhoneNumber.text.toString())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, " phone# inserted")
+                } else {
+                    Log.d(TAG, "Can not insert phone# ", task.exception)
+                }
+            }
+
+    }
+
+    private fun sendVerificationEmail() {
+        val user = auth.currentUser
+        user!!.sendEmailVerification()?.addOnCompleteListener {
+            Toast.makeText(this, "Sent verification email", Toast.LENGTH_LONG).show()
+        }?.addOnFailureListener {
+            Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun sendResetPasswordLink() {
+        val user = auth.currentUser
+        val email = user!!.email
+
+        auth.sendPasswordResetEmail(email!!).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Password reset email sent", Toast.LENGTH_LONG).show()
+                auth.signOut()
+
+            } else {
+                Log.e(TAG, "No user associated with that email")
+                Toast.makeText(this, "No user associated with that email", Toast.LENGTH_LONG)
+                    .show()
+            }
+
+        }
+
+    }
+
+
     override fun onStop() {
         if (authListener != null) {
             auth.removeAuthStateListener(authListener)
@@ -141,15 +199,6 @@ class SettingsActivity : AppCompatActivity() {
         super.onStart()
         if (authListener != null) {
             auth.addAuthStateListener(authListener)
-        }
-    }
-
-    private fun sendVerificationEmail() {
-        val user = auth.currentUser
-        user!!.sendEmailVerification()?.addOnCompleteListener {
-            Toast.makeText(this, "Sent verification email", Toast.LENGTH_LONG).show()
-        }?.addOnFailureListener {
-            Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()
         }
     }
 }
