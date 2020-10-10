@@ -4,4 +4,7 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="sign_in">Sign In</string>
+
+    <!--firebase strings -->
+    <string name="dbnode_users">users</string>
 </resources>

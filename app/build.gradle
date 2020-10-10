@@ -32,12 +32,22 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-
-    //firebase
-    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
-    implementation 'com.google.firebase:firebase-auth-ktx:19.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.2.1'
+
+
+    /* ------------------------- firebase ------------------------ */
+    //firebase Analytics
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.6.0'
+
+    //firebase Authentication
+    implementation 'com.google.firebase:firebase-auth-ktx:19.4.0'
+
+    //firebase Cloud Storage
+    implementation 'com.google.firebase:firebase-storage-ktx:19.2.0'
+
+    //firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database-ktx:19.5.0'
 
 
     testImplementation 'junit:junit:4.12'
