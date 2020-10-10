@@ -7,4 +7,8 @@
 
     <!--firebase strings -->
     <string name="dbnode_users">users</string>
+    <string name="field_name">name</string>
+    <string name="field_phone">phone</string>
+    <string name="field_profile_image">profile_image</string>
+    <string name="field_security_level">security_level</string>
 </resources>
