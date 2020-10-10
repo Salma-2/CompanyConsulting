@@ -72,25 +72,7 @@ class RegisterActivity : AppCompatActivity() {
                     "create User With Email:success, id:" + (auth.currentUser!!.uid)
                 )
                 val user = auth.currentUser
-                val insertedUser = User()
-                insertedUser.user_id = user!!.uid
-                val index = email.indexOf("@")
-                insertedUser.name = email.substring(0, index)
-
-                ref = database.reference.child(getString(R.string.dbnode_users)).child(user.uid)
-                ref.setValue(insertedUser).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "OnSuccess RegisterActivity: User Inserted")
-                    } else {
-                        Log.d(
-                            TAG,
-                            "OnFailure RegisterActivity: Can not insert user:\n" +
-                                    "ids = ${auth.uid} \t ${user.uid} ",
-                            task.exception
-                        )
-                    }
-                }
-//                insertUserData(user)
+                insertUserData(user)
                 sendVerificationEmail()
                 auth.signOut()
                 navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
