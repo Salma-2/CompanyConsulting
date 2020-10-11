@@ -99,7 +99,6 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 Log.d(TAG, "OnFailure RegisterActivity: Can not insert user: ", task.exception)
                 auth.signOut()
-
                 navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
             }
         }

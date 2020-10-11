@@ -4,12 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.consulting.models.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_settings.*
@@ -118,28 +118,37 @@ class SettingsActivity : AppCompatActivity() {
     }
 
 
-    private fun setupFirebaseAuth() {
-        authListener = FirebaseAuth.AuthStateListener {
-            val user = auth.currentUser
-            if (user == null) {
-                navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
-                Log.d(TAG, "AuthListener: signed out - null user")
-            } else {
-                Log.d(TAG, "AuthListener: signed in - user with id: ${user.uid}")
-            }
-        }
-    }
+
 
 
     private fun getUserDetails() {
-        val user = auth.currentUser
+        userEmail.setText(auth.currentUser!!.email)
 
-        userEmail.setText(user!!.email)
+        ref= database.reference.child(getString(R.string.dbnode_users))
+        val query = ref.orderByKey().equalTo(auth.currentUser!!.uid)
+        query.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(singleSnapshot in snapshot.children){
+                    val user = singleSnapshot.getValue(User::class.java)
+                    Log.d(TAG , "onDataChange: Query(orderByKey) found user: " + user.toString())
+                    userName.setText(user!!.name)
+                    userPhoneNumber.setText(user!!.phone)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+
 
     }
 
     private fun insertUserDetails(user: FirebaseUser?) {
         ref = database.reference.child(getString(R.string.dbnode_users)).child(user!!.uid)
+
+        /*--------------- set name ----------------*/
         ref.child(getString(R.string.field_name)).setValue(userName.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -148,6 +157,8 @@ class SettingsActivity : AppCompatActivity() {
                     Log.d(TAG, "Can not insert name ", task.exception)
                 }
             }
+
+        /*--------------- set phone ----------------*/
         ref.child(getString(R.string.field_phone)).setValue(userPhoneNumber.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -201,4 +212,18 @@ class SettingsActivity : AppCompatActivity() {
             auth.addAuthStateListener(authListener)
         }
     }
+
+
+    private fun setupFirebaseAuth() {
+        authListener = FirebaseAuth.AuthStateListener {
+            val user = auth.currentUser
+            if (user == null) {
+                navigateTo(this, SettingsActivity(), LoginActivity::class.java, true)
+                Log.d(TAG, "AuthListener: signed out - null user")
+            } else {
+                Log.d(TAG, "AuthListener: signed in - user with id: ${user.uid}")
+            }
+        }
+    }
 }
+
