@@ -124,9 +124,11 @@ class SettingsActivity : AppCompatActivity() {
     private fun getUserDetails() {
         userEmail.setText(auth.currentUser!!.email)
 
+
         ref= database.reference.child(getString(R.string.dbnode_users))
-        val query = ref.orderByKey().equalTo(auth.currentUser!!.uid)
-        query.addListenerForSingleValueEvent(object : ValueEventListener{
+        /*-----------Query1-------------*/
+        val query1 = ref.orderByKey().equalTo(auth.currentUser!!.uid)
+        query1.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(singleSnapshot in snapshot.children){
                     val user = singleSnapshot.getValue(User::class.java)
@@ -140,6 +142,22 @@ class SettingsActivity : AppCompatActivity() {
             }
 
         })
+        /*-----------Query2-------------*/
+//        val query2 = ref.orderByChild(getString(R.string.field_uid)).equalTo(auth.currentUser!!.uid)
+//        query2.addListenerForSingleValueEvent(object : ValueEventListener{
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//               for(singleSnapshot in snapshot.children){
+//                   val user = singleSnapshot.getValue(User::class.java)
+//                   Log.d(TAG , "onDataChange: Query(orderByKey) found user: " + user.toString())
+//                   userName.setText(user!!.name)
+//                   userPhoneNumber.setText(user!!.phone)
+//               }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//            }
+//
+//        })
 
 
 
