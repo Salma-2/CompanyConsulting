@@ -74,8 +74,6 @@ class RegisterActivity : AppCompatActivity() {
                 val user = auth.currentUser
                 insertUserData(user)
                 sendVerificationEmail()
-                auth.signOut()
-                navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
             } else {
                 Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "createUserWithEmail:failure", task.exception)
@@ -95,9 +93,14 @@ class RegisterActivity : AppCompatActivity() {
         ref = database.reference.child(getString(R.string.dbnode_users)).child(user.uid)
         ref.setValue(insertedUser).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Log.d(TAG, "OnSuccess RegisterActivity: User Inserted")
+                Log.d(TAG, "OnSuccess RegisterActivity: User Inserted ")
+                auth.signOut()
+                navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
             } else {
                 Log.d(TAG, "OnFailure RegisterActivity: Can not insert user: ", task.exception)
+                auth.signOut()
+
+                navigateTo(this, RegisterActivity(), LoginActivity::class.java, true)
             }
         }
 

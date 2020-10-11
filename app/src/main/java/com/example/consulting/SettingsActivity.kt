@@ -35,8 +35,10 @@ class SettingsActivity : AppCompatActivity() {
         changePasswordTv.setOnClickListener { sendResetPasswordLink() }
 
         saveBtn.setOnClickListener {
-            changeEmail()
+            showProgressBar(progressBar)
             insertUserDetails(auth.currentUser)
+            changeEmail()
+            dismissProgressBar(progressBar)
         }
 
     }
@@ -79,9 +81,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun updateUserEmail(currentEmail: String, password: String, newEmail: String) {
         val credential = EmailAuthProvider.getCredential(currentEmail, password)
         val user = auth.currentUser
-        showProgressBar(progressBar)
         user!!.reauthenticate(credential)?.addOnCompleteListener { task ->
-            dismissProgressBar(progressBar)
             if (task.isSuccessful) {
                 auth.fetchSignInMethodsForEmail(newEmail).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -93,7 +93,7 @@ class SettingsActivity : AppCompatActivity() {
                         } else {
                             user.updateEmail(newEmail).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    Toast.makeText(this, "Updated email", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this, "email updated", Toast.LENGTH_LONG).show()
                                     sendVerificationEmail()
                                     auth.signOut()
                                 } else {
