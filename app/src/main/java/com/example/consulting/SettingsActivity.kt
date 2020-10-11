@@ -1,9 +1,16 @@
 package com.example.consulting
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.consulting.dialogs.ChangePhotoDialog
 import com.example.consulting.models.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -14,33 +21,61 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
+    private val REQUEST_CODE = 1234
+
     lateinit var auth: FirebaseAuth
 
     lateinit var authListener: FirebaseAuth.AuthStateListener
     lateinit var database: FirebaseDatabase
     lateinit var ref: DatabaseReference
     private val TAG = "SettingsActivity"
+    private var storagePermission = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
         auth = Firebase.auth
         database = Firebase.database
+
+        verifyStoragePermissions()
         setupFirebaseAuth()
         getUserDetails()
+        init()
 
-        changePasswordTv.setOnClickListener { sendResetPasswordLink() }
+    }
 
-        saveBtn.setOnClickListener {
-            showProgressBar(progressBar)
-            insertUserDetails(auth.currentUser)
-            changeEmail()
-            dismissProgressBar(progressBar)
+    override fun getImagePath(imagePath: Uri) {
+
+    }
+
+    override fun getImageBitmap(bitmap: Bitmap) {
+
+    }
+
+
+    private fun init() {
+
+        changePasswordTv.setOnClickListener {
+            sendResetPasswordLink()
         }
 
+        saveBtn.setOnClickListener {
+            insertUserDetails(auth.currentUser)
+            changeEmail()
+        }
+
+        userProfilePhoto.setOnClickListener {
+            if(storagePermission){
+                val onPhotoRecievedListener = this
+                val dialog = ChangePhotoDialog(onPhotoRecievedListener)
+                dialog.show(supportFragmentManager , "ChangePhotoDialog")
+            }
+            else{
+                verifyStoragePermissions()
+            }
+        }
     }
 
     private fun isEmailChanged(): Boolean {
@@ -117,22 +152,19 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-
     private fun getUserDetails() {
         userEmail.setText(auth.currentUser!!.email)
 
 
-        ref= database.reference.child(getString(R.string.dbnode_users))
+        ref = database.reference.child(getString(R.string.dbnode_users))
         /*-----------Query1-------------*/
         val query1 = ref.orderByKey().equalTo(auth.currentUser!!.uid)
-        query1.addListenerForSingleValueEvent(object : ValueEventListener{
+        query1.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for(singleSnapshot in snapshot.children){
+                for (singleSnapshot in snapshot.children) {
+//                    val singleSnapshot = snapshot.children.iterator().next()
                     val user = singleSnapshot.getValue(User::class.java)
-                    Log.d(TAG , "onDataChange: Query(orderByKey) found user: " + user.toString())
+                    Log.d(TAG, "onDataChange: Query(orderByKey) found user: " + user.toString())
                     userName.setText(user!!.name)
                     userPhoneNumber.setText(user!!.phone)
                 }
@@ -158,7 +190,6 @@ class SettingsActivity : AppCompatActivity() {
 //            }
 //
 //        })
-
 
 
     }
@@ -243,5 +274,58 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private fun verifyStoragePermissions() {
+        Log.d(TAG, "verifyPermissions: asking user for permissions.")
+        val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        )
+
+        if (
+            ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                permissions[0]
+            ) == PackageManager.PERMISSION_GRANTED
+            &&
+            ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                permissions[1]
+            ) == PackageManager.PERMISSION_GRANTED
+            &&
+            ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                permissions[2]
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            storagePermission = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                permissions,
+                REQUEST_CODE
+            )
+        }
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            REQUEST_CODE -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(TAG , "onRequestPermissionsResult: User has allowed permission to access:" + permissions[0] )
+                }
+            }
+        }
+    }
+
+
+
 }
 
