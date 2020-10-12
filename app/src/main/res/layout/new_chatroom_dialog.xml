@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLayout1">
+
+        <TextView
+            android:id="@+id/chatroomNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Chatroom Name:"
+
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:layout_below="@+id/chatroomNameTv"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:id="@+id/chatroomName"/>
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLayout2"
+        android:layout_below="@+id/relLayout1"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/securityLevelTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Security Level"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp" />
+
+        <SeekBar
+            android:id="@+id/securityLevelSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/securityLevelTv"
+            android:layout_marginTop="10dp"
+            android:max="10"/>
+
+        <TextView
+            android:id="@+id/securityLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/securityLevelSeekBar"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/createChatroomBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relLayout2"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Create"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

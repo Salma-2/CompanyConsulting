@@ -6,10 +6,26 @@
     <string name="sign_in">Sign In</string>
 
     <!--firebase strings -->
+    <!-- users -->
     <string name="dbnode_users">users</string>
     <string name="field_name">name</string>
     <string name="field_phone">phone</string>
     <string name="field_profile_image">profile_image</string>
     <string name="field_security_level">security_level</string>
     <string name="field_uid">user_id</string>
+
+
+    <string name="title_activity_chat">ChatActivity</string>
+
+    <!-- chatrooms -->
+    <string name="dbnode_chatrooms">chatrooms</string>
+    <string name="field_chatroom_message">chat_messages</string>
+   <string name="field_message">message</string>
+    <string name="field_chatroom_name">chat_name</string>
+    <string name="field_creator_id">creator_id</string>
+    <string name="field_chatroom_id">chatroom_id</string>
+    
+
+
+
 </resources>

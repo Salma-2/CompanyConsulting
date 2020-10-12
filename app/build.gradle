@@ -14,6 +14,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled= true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -23,6 +24,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -49,10 +57,8 @@ dependencies {
 
     //firebase Realtime Database
     implementation 'com.google.firebase:firebase-database-ktx:19.5.0'
-
-
-
-
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
 
 
     testImplementation 'junit:junit:4.12'

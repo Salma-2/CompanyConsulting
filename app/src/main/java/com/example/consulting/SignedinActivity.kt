@@ -56,7 +56,7 @@ class SignedinActivity : AppCompatActivity() {
             }
 
             R.id.action_chat -> {
-                navigateTo(this, SignedinActivity(), SettingsActivity::class.java)
+                navigateTo(this, SignedinActivity(), ChatActivity::class.java)
                 return true
             }
         }
