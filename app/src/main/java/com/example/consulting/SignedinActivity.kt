@@ -54,6 +54,11 @@ class SignedinActivity : AppCompatActivity() {
                 navigateTo(this, SignedinActivity(), SettingsActivity::class.java)
                 return true
             }
+
+            R.id.action_chat -> {
+                navigateTo(this, SignedinActivity(), SettingsActivity::class.java)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
