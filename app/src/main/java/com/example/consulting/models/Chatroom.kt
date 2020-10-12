@@ -5,6 +5,4 @@ class Chatroom {
     var security_level = ""
     var creater_id = ""
     var chatroom_id =""
-
-
 }

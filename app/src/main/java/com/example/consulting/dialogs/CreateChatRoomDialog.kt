@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.consulting.R
 import com.example.consulting.isEmpty
+import com.example.consulting.models.ChatMessage
 import com.example.consulting.models.Chatroom
 import com.example.consulting.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +25,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.new_chatroom_dialog.*
 import kotlinx.android.synthetic.main.new_chatroom_dialog.view.*
+import java.sql.Time
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
@@ -71,17 +75,17 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
                 if (userSecurityLevel >= choosedSecurityLevel && choosedSecurityLevel != 0) {
                     dbRef =
                         Firebase.database.reference.child(mContext.getString(R.string.dbnode_chatrooms))
-                    val id = dbRef.push().key
+                    val chatroomId = dbRef.push().key
 
                     val chatroom = Chatroom()
                     chatroom.chatroom_name = chatroomName.text.toString()
                     chatroom.security_level = choosedSecurityLevel.toString()
-                    chatroom.chatroom_id = id.toString()
+                    chatroom.chatroom_id = chatroomId.toString()
                     chatroom.creater_id = auth.currentUser!!.uid
 
                     dbRef = Firebase.database.reference
                         .child(mContext.getString(R.string.dbnode_chatrooms))
-                        .child(id!!)
+                        .child(chatroomId!!)
                     dbRef.setValue(chatroom).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Log.d(
@@ -89,8 +93,6 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
                                 "OnComplete : chatroom inserted with id: ${chatroom.chatroom_id}"
                             )
                             Toast.makeText(mContext, "Chatroom created", Toast.LENGTH_SHORT).show()
-
-
                             dismiss()
                         } else {
                             Log.d(TAG, "OnComplete : can not insert chatroom, ", task.exception)
@@ -98,11 +100,29 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
                         }
                     }
 
+
+                    //create welcome msg
+
+                    val chatMessage = ChatMessage()
+                    chatMessage.message = "Welcome to the new chatroom!"
+                    chatMessage.timestamp = getTimeStamp()
+
+                    val messageId = Firebase.database.reference
+                        .push().key.toString()
+                    dbRef = Firebase.database.reference
+                        .child(mContext.getString(R.string.dbnode_chatrooms))
+                        .child(chatroomId!!)
+                        .child(mContext.getString(R.string.field_chatroom_message))
+                        .child(messageId)
+                    dbRef.setValue(chatMessage)
+
+
                 } else {
                     Toast.makeText(mContext, "insuffient security level", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(mContext, "chatroom name can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext, "chatroom name can not be empty", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -131,6 +151,12 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
             }
 
         })
+    }
+
+    fun getTimeStamp(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        sdf.timeZone = TimeZone.getTimeZone("Canada/Pacific")
+        return sdf.format(Date())
     }
 
 
