@@ -4,14 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 28
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.consulting"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -34,7 +34,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
-
+    //Universal Image Loader
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
     /* ------------------------- firebase ------------------------ */
     //firebase Analytics
@@ -48,6 +49,8 @@ dependencies {
 
     //firebase Realtime Database
     implementation 'com.google.firebase:firebase-database-ktx:19.5.0'
+
+
 
 
 

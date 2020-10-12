@@ -3,7 +3,9 @@ package com.example.consulting
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.view.View
+import java.io.ByteArrayOutputStream
 
 
 fun isEmpty(str: String): Boolean {
@@ -18,7 +20,7 @@ fun isEmpty(str: String): Boolean {
 }
 
 
-fun <T> navigateTo(context: Context, activity : Activity, to: Class<T>, isFinishid: Boolean = false){
+fun <T> navigateTo(context: Context, activity: Activity, to: Class<T>, isFinishid: Boolean = false){
     val intent = Intent(context, to)
     if(isFinishid)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -36,4 +38,10 @@ fun showProgressBar(view: View){
 fun dismissProgressBar(view: View){
     if(view.visibility == View.VISIBLE)
         view.visibility= View.INVISIBLE
+}
+
+fun getBytesFromBitmap(bitmap: Bitmap, quality: Int): ByteArray {
+    val stream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
+    return stream.toByteArray()
 }

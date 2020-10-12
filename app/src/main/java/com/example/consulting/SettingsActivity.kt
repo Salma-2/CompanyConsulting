@@ -4,14 +4,15 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.consulting.dialogs.ChangePhotoDialog
 import com.example.consulting.models.User
+import com.example.consulting.utility.BackgroundImageResize
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -21,7 +22,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
+class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
     private val REQUEST_CODE = 1234
 
     lateinit var auth: FirebaseAuth
@@ -29,8 +30,14 @@ class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
     lateinit var authListener: FirebaseAuth.AuthStateListener
     lateinit var database: FirebaseDatabase
     lateinit var ref: DatabaseReference
-    private val TAG = "SettingsActivity"
+
+
+    val TAG = "SettingsActivity"
+
+
     private var storagePermission = false
+    private var selectedImageBitmap: Bitmap? = null
+    private var selectedImageUri: Uri? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +53,23 @@ class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
 
     }
 
+
+
+
     override fun getImagePath(imagePath: Uri) {
+        if (!isEmpty(imagePath.toString())) {
+            selectedImageBitmap = null
+            selectedImageUri = imagePath
+            Log.d(TAG, "getImagePath: got the image uri: " + selectedImageUri)
+
+        }
 
     }
 
     override fun getImageBitmap(bitmap: Bitmap) {
-
+        selectedImageBitmap = bitmap
+        selectedImageUri = null
+        Log.d(TAG, "getImageBitmap: got the image bitmap: " + selectedImageBitmap);
     }
 
 
@@ -64,19 +82,46 @@ class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
         saveBtn.setOnClickListener {
             insertUserDetails(auth.currentUser)
             changeEmail()
+            doSavePhotoWork()
         }
 
         userProfilePhoto.setOnClickListener {
-            if(storagePermission){
+            if (storagePermission) {
                 val onPhotoRecievedListener = this
                 val dialog = ChangePhotoDialog(onPhotoRecievedListener)
-                dialog.show(supportFragmentManager , "ChangePhotoDialog")
-            }
-            else{
+                dialog.show(supportFragmentManager, "ChangePhotoDialog")
+            } else {
                 verifyStoragePermissions()
             }
         }
     }
+
+    private fun doSavePhotoWork() {
+        if (selectedImageBitmap != null) {
+            uploadNewPhoto(selectedImageBitmap!!)
+        } else if (selectedImageUri != null) {
+            uploadNewPhoto(selectedImageUri)
+        }
+    }
+
+    fun uploadNewPhoto(imageUri: Uri?) {
+        /*
+            upload a new profile photo to firebase storage
+         */
+        Log.d(TAG, "uploadNewPhoto: uploading new profile photo to firebase storage(ImageUri).")
+
+        //Only accept image sizes that are compressed to under 5MB. If thats not possible
+        //then do not allow image to be uploaded
+        val resize = BackgroundImageResize(null, this, auth)
+        resize.execute(imageUri)
+    }
+
+    fun uploadNewPhoto(bitmap: Bitmap) {
+        Log.e(TAG, "uploadNewPhoto: uploading new profile photo to firebase storage(Bitmap).")
+        val resize = BackgroundImageResize(bitmap, this, auth)
+        resize.execute(null)
+    }
+
 
     private fun isEmailChanged(): Boolean {
         val newEmail = userEmail.text.toString()
@@ -121,7 +166,7 @@ class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
                 auth.fetchSignInMethodsForEmail(newEmail).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val num = task.result?.signInMethods?.size
-                        Log.d(TAG + " Signin methods: ", num.toString())
+                        Log.d(TAG, " Signin methods: " + num.toString())
                         if (num == 1) {
                             Toast.makeText(this, "That email is already in use", Toast.LENGTH_LONG)
                                 .show()
@@ -316,15 +361,17 @@ class SettingsActivity : AppCompatActivity() , OnPhotoRecievedListener{
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode){
+        when (requestCode) {
             REQUEST_CODE -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    Log.d(TAG , "onRequestPermissionsResult: User has allowed permission to access:" + permissions[0] )
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(
+                        TAG,
+                        "onRequestPermissionsResult: User has allowed permission to access:" + permissions[0]
+                    )
                 }
             }
         }
     }
-
 
 
 }
