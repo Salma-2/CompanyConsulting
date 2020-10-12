@@ -55,14 +55,12 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
     }
 
 
-
-
     override fun getImagePath(imagePath: Uri) {
         if (!isEmpty(imagePath.toString())) {
             selectedImageBitmap = null
             selectedImageUri = imagePath
             Log.d(TAG, "getImagePath: got the image uri: " + selectedImageUri)
-            ImageLoader.getInstance().displayImage(imagePath.toString(),userProfilePhoto)
+            ImageLoader.getInstance().displayImage(imagePath.toString(), userProfilePhoto)
         }
 
     }
@@ -163,7 +161,7 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
     private fun updateUserEmail(currentEmail: String, password: String, newEmail: String) {
         val credential = EmailAuthProvider.getCredential(currentEmail, password)
         val user = auth.currentUser
-        user!!.reauthenticate(credential)?.addOnCompleteListener { task ->
+        user!!.reauthenticate(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 auth.fetchSignInMethodsForEmail(newEmail).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -271,9 +269,9 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
 
     private fun sendVerificationEmail() {
         val user = auth.currentUser
-        user!!.sendEmailVerification()?.addOnCompleteListener {
+        user!!.sendEmailVerification().addOnCompleteListener {
             Toast.makeText(this, "Sent verification email", Toast.LENGTH_LONG).show()
-        }?.addOnFailureListener {
+        }.addOnFailureListener {
             Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()
         }
     }
@@ -299,17 +297,17 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
 
 
     override fun onStop() {
-        if (authListener != null) {
-            auth.removeAuthStateListener(authListener)
-        }
+
+        auth.removeAuthStateListener(authListener)
+
         super.onStop()
     }
 
     override fun onStart() {
         super.onStart()
-        if (authListener != null) {
-            auth.addAuthStateListener(authListener)
-        }
+
+        auth.addAuthStateListener(authListener)
+
     }
 
 

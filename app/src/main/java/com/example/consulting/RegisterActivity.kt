@@ -87,8 +87,8 @@ class RegisterActivity : AppCompatActivity() {
     private fun insertUserData(user: FirebaseUser?) {
         val insertedUser = User()
         insertedUser.user_id = user!!.uid
-        val index = user!!.email!!.indexOf("@")
-        insertedUser.name = user!!.email!!.substring(0, index)
+        val index = user.email!!.indexOf("@")
+        insertedUser.name = user.email!!.substring(0, index)
 
         ref = database.reference.child(getString(R.string.dbnode_users)).child(user.uid)
         ref.setValue(insertedUser).addOnCompleteListener { task ->
@@ -109,9 +109,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun sendVerificationEmail() {
         val user = auth.currentUser
-        user!!.sendEmailVerification()?.addOnCompleteListener {
+        user!!.sendEmailVerification().addOnCompleteListener {
             Toast.makeText(this, "Verification email sent", Toast.LENGTH_LONG).show()
-        }?.addOnFailureListener {
+        }.addOnFailureListener {
             Toast.makeText(this, "Couldn't send verification email", Toast.LENGTH_LONG).show()
         }
     }

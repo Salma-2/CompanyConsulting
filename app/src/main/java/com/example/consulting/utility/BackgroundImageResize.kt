@@ -68,7 +68,7 @@ class BackgroundImageResize(val bm: Bitmap?, val context: Context, val auth: Fir
             bytes = getBytesFromBitmap(bitmap!!, 100 / i)
             Log.e(
                 TAG,
-                "doInBackground: megabytes: (" + (11 - i) + "0%) " + bytes!!.size / MB + " MB"
+                "doInBackground: megabytes: (" + (11 - i) + "0%) " + bytes.size / MB + " MB"
             )
             if (bytes.size / MB < MB_THRESHHOLD) {
                 return bytes

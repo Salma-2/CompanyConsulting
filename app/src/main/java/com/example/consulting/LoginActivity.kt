@@ -99,17 +99,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        if (authListener != null) {
+
             auth.removeAuthStateListener(authListener)
-        }
+
         super.onStop()
     }
 
     override fun onStart() {
         super.onStart()
-        if (authListener != null) {
+
             auth.addAuthStateListener(authListener)
-        }
+
     }
 
 }
