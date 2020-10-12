@@ -20,6 +20,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.nostra13.universalimageloader.core.ImageLoader
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
@@ -61,7 +62,7 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
             selectedImageBitmap = null
             selectedImageUri = imagePath
             Log.d(TAG, "getImagePath: got the image uri: " + selectedImageUri)
-
+            ImageLoader.getInstance().displayImage(imagePath.toString(),userProfilePhoto)
         }
 
     }
@@ -69,7 +70,8 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
     override fun getImageBitmap(bitmap: Bitmap) {
         selectedImageBitmap = bitmap
         selectedImageUri = null
-        Log.d(TAG, "getImageBitmap: got the image bitmap: " + selectedImageBitmap);
+        Log.d(TAG, "getImageBitmap: got the image bitmap: " + selectedImageBitmap)
+        userProfilePhoto.setImageBitmap(bitmap)
     }
 
 
@@ -211,7 +213,8 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
                     val user = singleSnapshot.getValue(User::class.java)
                     Log.d(TAG, "onDataChange: Query(orderByKey) found user: " + user.toString())
                     userName.setText(user!!.name)
-                    userPhoneNumber.setText(user!!.phone)
+                    userPhoneNumber.setText(user.phone)
+                    ImageLoader.getInstance().displayImage(user.profile_image, userProfilePhoto)
                 }
             }
 
@@ -228,6 +231,8 @@ class SettingsActivity : AppCompatActivity(), OnPhotoRecievedListener {
 //                   Log.d(TAG , "onDataChange: Query(orderByKey) found user: " + user.toString())
 //                   userName.setText(user!!.name)
 //                   userPhoneNumber.setText(user!!.phone)
+//        ImageLoader.getInstance().displayImage(user.profile_image, userProfilePhoto)
+
 //               }
 //            }
 //

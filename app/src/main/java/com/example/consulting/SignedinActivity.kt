@@ -7,10 +7,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.consulting.utility.UniversalImageLoader
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
+import com.nostra13.universalimageloader.core.ImageLoader
 
 class SignedinActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -20,12 +22,19 @@ class SignedinActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         setupFirebaseAuth()
+        initImageLoader()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signedin)
 
         setUserDetails()
         getUserDetails()
+    }
+
+    private fun initImageLoader(){
+        val imageLoader = UniversalImageLoader(this)
+        ImageLoader.getInstance().init(imageLoader.getConfig())
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
