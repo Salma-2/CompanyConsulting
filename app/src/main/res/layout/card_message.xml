@@ -38,6 +38,7 @@
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
         app:contentPadding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/userProfileImage"

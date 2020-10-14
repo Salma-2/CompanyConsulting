@@ -79,7 +79,7 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
                     chatroom.chatroom_name = chatroomName.text.toString()
                     chatroom.security_level = choosedSecurityLevel.toString()
                     chatroom.chatroom_id = chatroomId.toString()
-                    chatroom.creater_id = auth.currentUser!!.uid
+                    chatroom.creator_id = auth.currentUser!!.uid
 
                     dbRef = Firebase.database.reference
                         .child(mContext.getString(R.string.dbnode_chatrooms))

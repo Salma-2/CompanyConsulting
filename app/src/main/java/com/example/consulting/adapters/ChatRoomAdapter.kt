@@ -1,4 +1,4 @@
-package com.example.consulting
+package com.example.consulting.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.consulting.R
+import com.example.consulting.isEmpty
 import com.example.consulting.models.ChatMessage
 import com.example.consulting.models.User
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -49,7 +50,7 @@ class ChatRoomAdapter(val context: Context, val chatroomMessages: ArrayList<Chat
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = layoutInflater.inflate(R.layout.message_card, parent, false)
+        val itemView = layoutInflater.inflate(R.layout.card_message, parent, false)
         return ViewHolder(itemView)
     }
 

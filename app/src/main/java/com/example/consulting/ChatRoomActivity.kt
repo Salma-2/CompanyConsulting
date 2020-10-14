@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.consulting.adapters.ChatRoomAdapter
 import com.example.consulting.models.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -47,12 +48,9 @@ class ChatRoomActivity() : AppCompatActivity() {
 
         chatroomMessages = ArrayList()
 
-        chatList.layoutManager = chatMessagesLayoutManager
-        chatList.adapter = chatMessagesAdapter
+        messagesList.layoutManager = chatMessagesLayoutManager
+        messagesList.adapter = chatMessagesAdapter
         auth = Firebase.auth
-
-
-
 
         init()
 
@@ -90,9 +88,7 @@ class ChatRoomActivity() : AppCompatActivity() {
                 for (singleSnapshot in snapshot.children) {
                     val msg = singleSnapshot.getValue(ChatMessage::class.java)
                     chatroomMessages.add(msg!!)
-
-                    chatList.adapter?.notifyDataSetChanged()
-
+                    messagesList.adapter?.notifyDataSetChanged()
                     Log.d(TAG, "Added msg to msg list : ${msg.message}")
                 }
             }
@@ -107,7 +103,7 @@ class ChatRoomActivity() : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        chatList.adapter?.notifyDataSetChanged()
+        messagesList.adapter?.notifyDataSetChanged()
     }
 
     val valueEventListener = object : ValueEventListener {

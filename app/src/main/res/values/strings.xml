@@ -21,7 +21,7 @@
     <string name="dbnode_chatrooms">chatrooms</string>
     <string name="field_chatroom_message">chat_messages</string>
     <string name="field_message">message</string>
-    <string name="field_chatroom_name">chat_name</string>
+    <string name="field_chatroom_name">chatroom_name</string>
     <string name="field_creator_id">creator_id</string>
     <string name="field_chatroom_id">chatroom_id</string>
 
