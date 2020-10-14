@@ -3,7 +3,6 @@ package com.example.consulting.dialogs
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,8 +14,7 @@ import com.example.consulting.CAMERA_REQUEST_CODE
 import com.example.consulting.OnPhotoRecievedListener
 import com.example.consulting.PICKFILE_REQUEST_CODE
 import com.example.consulting.R
-import kotlinx.android.synthetic.main.change_photo_dialog.*
-import kotlinx.android.synthetic.main.change_photo_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_change_photo.view.*
 
 
 class ChangePhotoDialog(val onPhotoRecievedListener: OnPhotoRecievedListener) : DialogFragment() {
@@ -29,7 +27,7 @@ class ChangePhotoDialog(val onPhotoRecievedListener: OnPhotoRecievedListener) : 
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.change_photo_dialog, container, false)
+        val view = inflater.inflate(R.layout.dialog_change_photo, container, false)
 
         view.dialogChoosePhoto.setOnClickListener {
             Log.d(TAG, "onClick: accessing phones memory.")

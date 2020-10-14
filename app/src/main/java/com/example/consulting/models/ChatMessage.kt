@@ -5,11 +5,12 @@ import java.util.*
 
 class ChatMessage {
     var message = ""
-    val user_id = ""
+    var user_id = ""
     var timestamp = ""
-    var profile_image = ""
-    var user_name = ""
 
-
-
+    override fun toString(): String {
+        return "user_id: $user_id\n" +
+                "message: $message\n" +
+                "timestamp: $timestamp\n"
+    }
 }

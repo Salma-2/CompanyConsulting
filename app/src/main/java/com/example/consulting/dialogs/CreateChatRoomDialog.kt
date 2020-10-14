@@ -2,6 +2,7 @@ package com.example.consulting.dialogs
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +11,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.example.consulting.R
-import com.example.consulting.isEmpty
+import com.example.consulting.*
 import com.example.consulting.models.ChatMessage
 import com.example.consulting.models.Chatroom
 import com.example.consulting.models.User
+import com.example.consulting.ChatRoomActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -23,11 +24,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.new_chatroom_dialog.*
-import kotlinx.android.synthetic.main.new_chatroom_dialog.view.*
-import java.sql.Time
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.android.synthetic.main.dialog_new_chatroom.*
+import kotlinx.android.synthetic.main.dialog_new_chatroom.view.*
 
 
 class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
@@ -45,7 +43,7 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         auth = Firebase.auth
-        val view = inflater.inflate(R.layout.new_chatroom_dialog, container, false)
+        val view = inflater.inflate(R.layout.dialog_new_chatroom, container, false)
 
         getUserSecurityLevel()
 
@@ -116,6 +114,9 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
                         .child(messageId)
                     dbRef.setValue(chatMessage)
 
+                    val intent = Intent(mContext, ChatRoomActivity::class.java)
+                    intent.putExtra(CHATROOM_ID, chatroomId)
+                    mContext.startActivity(intent)
 
                 } else {
                     Toast.makeText(mContext, "insuffient security level", Toast.LENGTH_SHORT).show()
@@ -153,11 +154,7 @@ class CreateChatRoomDialog(val mContext: Context) : DialogFragment() {
         })
     }
 
-    fun getTimeStamp(): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
-        sdf.timeZone = TimeZone.getTimeZone("Canada/Pacific")
-        return sdf.format(Date())
-    }
+
 
 
 }

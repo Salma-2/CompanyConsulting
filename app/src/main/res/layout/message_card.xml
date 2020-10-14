@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/userProfileImage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView"
+        app:srcCompat="@drawable/ic_android"
         tools:srcCompat="@drawable/ic_android" />
 
     <TextView
@@ -24,7 +25,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/userProfileImage"
         tools:text="salma" />
 
     <androidx.cardview.widget.CardView
@@ -39,7 +40,7 @@
         app:cardElevation="4dp"
         app:contentPadding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImage"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout

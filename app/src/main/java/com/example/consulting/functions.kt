@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.view.View
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun isEmpty(str: String): Boolean {
@@ -28,7 +30,6 @@ fun <T> navigateTo(context: Context, activity: Activity, to: Class<T>, isFinishi
 
     if(isFinishid)
         activity.finish()
-
 }
 
 fun showProgressBar(view: View){
@@ -44,4 +45,10 @@ fun getBytesFromBitmap(bitmap: Bitmap, quality: Int): ByteArray {
     val stream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
     return stream.toByteArray()
+}
+
+fun getTimeStamp(): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+    sdf.timeZone = TimeZone.getTimeZone("Canada/Pacific")
+    return sdf.format(Date())
 }

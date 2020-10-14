@@ -14,8 +14,8 @@ import com.example.consulting.isEmpty
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.resend_verification_dialog.*
-import kotlinx.android.synthetic.main.resend_verification_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_resend_verification.*
+import kotlinx.android.synthetic.main.dialog_resend_verification.view.*
 
 
 class ForgotPasswordDialog(val mContext: Context) : DialogFragment() {
@@ -30,7 +30,7 @@ class ForgotPasswordDialog(val mContext: Context) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         auth = Firebase.auth
-        val view = inflater.inflate(R.layout.forgot_password_dialog, container, false)
+        val view = inflater.inflate(R.layout.dialog_forgot_password, container, false)
 
         view.closeDialog.setOnClickListener {
             dismiss()
