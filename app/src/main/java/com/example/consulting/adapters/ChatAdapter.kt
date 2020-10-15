@@ -1,12 +1,15 @@
 package com.example.consulting.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.consulting.CHATROOM_ID
+import com.example.consulting.ChatRoomActivity
 import com.example.consulting.R
 import com.example.consulting.models.Chatroom
 import com.example.consulting.models.User
@@ -27,6 +30,18 @@ class ChatAdapter(val context: Context, val chatList: ArrayList<Chatroom>) :
         val userProfileImage = itemView.findViewById<ImageView>(R.id.userProfileImage)
         val numberChatMessages = itemView.findViewById<TextView>(R.id.numberChatMessages)
         val deleteChatBtn = itemView.findViewById<ImageView>(R.id.deleteChatBtn)
+        var chatroomId = ""
+
+        init{
+            itemView.setOnClickListener {
+                val intent = Intent(context, ChatRoomActivity::class.java)
+                intent.putExtra(CHATROOM_ID , chatroomId)
+                context.startActivity(intent)
+            }
+        }
+
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,9 +52,9 @@ class ChatAdapter(val context: Context, val chatList: ArrayList<Chatroom>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chat = chatList[position]
         holder.chatroomName.text = chat.chatroom_name
-        val num = chat.chatroomMessages.size
         holder.numberChatMessages.text = "${chat.chatroomMessages.size} messages"
         getUserDetails(chat, holder)
+        holder.chatroomId = chat.chatroom_id
     }
 
     override fun getItemCount() = chatList.size

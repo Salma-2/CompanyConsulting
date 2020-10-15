@@ -81,8 +81,6 @@ class ChatActivity : AppCompatActivity() {
                         messages.add(message)
                         Log.d(TAG, "new message added to message list -> ${message.message}")
                     }
-
-
                     chatroom.chatroomMessages = messages
                     chatroomList.add(chatroom)
                     chatList.adapter?.notifyDataSetChanged()
