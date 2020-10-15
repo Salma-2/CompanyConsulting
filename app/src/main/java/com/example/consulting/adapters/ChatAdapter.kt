@@ -2,17 +2,20 @@ package com.example.consulting.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.consulting.CHATROOM_ID
 import com.example.consulting.ChatRoomActivity
 import com.example.consulting.R
 import com.example.consulting.models.Chatroom
 import com.example.consulting.models.User
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -22,24 +25,32 @@ import com.nostra13.universalimageloader.core.ImageLoader
 
 class ChatAdapter(val context: Context, val chatList: ArrayList<Chatroom>) :
     RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+    val auth = Firebase.auth
     private val layoutInflater = LayoutInflater.from(context)
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         val createdBy = itemView.findViewById<TextView>(R.id.createdByTv)
         val chatroomName = itemView.findViewById<TextView>(R.id.chatroomName)
         val userProfileImage = itemView.findViewById<ImageView>(R.id.userProfileImage)
         val numberChatMessages = itemView.findViewById<TextView>(R.id.numberChatMessages)
         val deleteChatBtn = itemView.findViewById<ImageView>(R.id.deleteChatBtn)
         var chatroomId = ""
+        var creatorId = ""
 
-        init{
+        init {
             itemView.setOnClickListener {
                 val intent = Intent(context, ChatRoomActivity::class.java)
-                intent.putExtra(CHATROOM_ID , chatroomId)
+                intent.putExtra(CHATROOM_ID, chatroomId)
                 context.startActivity(intent)
             }
-        }
 
+            deleteChatBtn.setOnClickListener {
+                if (auth.currentUser!!.uid == creatorId) {
+                    deleteChat(chatroomId)
+                }
+            }
+        }
 
 
     }
@@ -55,6 +66,7 @@ class ChatAdapter(val context: Context, val chatList: ArrayList<Chatroom>) :
         holder.numberChatMessages.text = "${chat.chatroomMessages.size} messages"
         getUserDetails(chat, holder)
         holder.chatroomId = chat.chatroom_id
+        holder.creatorId = chat.creator_id
     }
 
     override fun getItemCount() = chatList.size
@@ -78,5 +90,20 @@ class ChatAdapter(val context: Context, val chatList: ArrayList<Chatroom>) :
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
+
+    private fun deleteChat(chatroomId: String) {
+        val chatroomRef = Firebase.database.reference
+            .child(context.getString(R.string.dbnode_chatrooms))
+            .child(chatroomId)
+            .removeValue().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Chatroom Deleted", Toast.LENGTH_SHORT).show()
+                    Log.d("ChatActivity", "Chatroom Deleted with id $chatroomId")
+                }
+                else{
+                    Log.d("ChatActivity", "can not delete chat with id $chatroomId", task.exception)
+                }
+            }
     }
 }

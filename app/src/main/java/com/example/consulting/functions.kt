@@ -5,6 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.view.View
+import com.example.consulting.adapters.ChatAdapter
+import com.example.consulting.models.Chatroom
+import com.example.consulting.models.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.nostra13.universalimageloader.core.ImageLoader
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,3 +61,4 @@ fun getTimeStamp(): String {
     sdf.timeZone = TimeZone.getTimeZone("Canada/Pacific")
     return sdf.format(Date())
 }
+

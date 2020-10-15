@@ -4,7 +4,7 @@ class User {
     var name = ""
     var phone = "1"
     var profile_image = ""
-    var security_level = "1"
+    var security_level = "2"
     var user_id = ""
 
 
