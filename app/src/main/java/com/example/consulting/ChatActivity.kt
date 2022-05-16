@@ -25,7 +25,7 @@ class ChatActivity : AppCompatActivity() {
     private val TAG = "ChatActivity"
     private val auth = Firebase.auth
     private lateinit var chatroomRef: DatabaseReference
-
+  
     private val chatroomAdapter by lazy {
         ChatAdapter(this, chatroomList)
     }

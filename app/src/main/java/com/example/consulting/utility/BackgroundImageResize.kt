@@ -23,7 +23,7 @@ class BackgroundImageResize(val bm: Bitmap?, val context: Context, val auth: Fir
     AsyncTask<Uri, Int, ByteArray>() {
 
 
-    val storage: FirebaseStorage
+    private val storage: FirebaseStorage
     var database: FirebaseDatabase
     lateinit var storageRef: StorageReference
     lateinit var dbRef: DatabaseReference
@@ -56,7 +56,7 @@ class BackgroundImageResize(val bm: Bitmap?, val context: Context, val auth: Fir
                     "doInBackground: bitmap size: megabytes: " + bitmap!!.getByteCount() / MB + " MB"
                 )
             } catch (e: IOException) {
-                Log.e(TAG, "doInBackground: IOException: ", e.cause);
+                Log.e(TAG, "doInBackground: IOException: ", e.cause)
             }
         }
         var bytes: ByteArray? = null
